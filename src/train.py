@@ -16,19 +16,26 @@ from models.data_parallel import DataParallel
 from logger import Logger
 from datasets.dataset_factory import get_dataset
 from trains.train_factory import train_factory
-
-
+import mmcv
 def main(opt):
     torch.manual_seed(opt.seed)
     torch.backends.cudnn.benchmark = not opt.not_cuda_benchmark and not opt.test
 
     print('Setting up data...')
     Dataset = get_dataset(opt.dataset, opt.task)
-    f = open(opt.data_cfg)
-    data_config = json.load(f)
-    trainset_paths = data_config['train']
-    dataset_root = data_config['root']
-    f.close()
+    if ".json" in opt.data_cfg:
+        f = open(opt.data_cfg)
+        data_config = json.load(f)
+        trainset_paths = data_config['train']
+        dataset_root = data_config['root']
+        f.close()
+    elif ".py" in opt.data_cfg:
+        data_config = mmcv.Config.fromfile(opt.data_cfg).data
+        trainset_paths = data_config["train"]
+        dataset_root = data_config["root"]
+    else:
+        raise NotImplemented
+
     transforms = T.Compose([T.ToTensor()])
     dataset = Dataset(opt, dataset_root, trainset_paths, (1088, 608), augment=True, transforms=transforms)
     opt = opts().update_dataset_info_and_set_heads(opt, dataset)
