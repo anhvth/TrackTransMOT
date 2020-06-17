@@ -445,7 +445,6 @@ class JointDataset(LoadImagesAndLabels):  # for training
         for i, _ in enumerate(labels):
             if labels[i, 1] > -1:
                 labels[i, 1] += self.tid_start_index[ds]
-        import pdb; pdb.set_trace()
 
         output_h = imgs.shape[1] // self.opt.down_ratio
         output_w = imgs.shape[2] // self.opt.down_ratio
@@ -470,7 +469,6 @@ class JointDataset(LoadImagesAndLabels):  # for training
             bbox[1] = np.clip(bbox[1], 0, output_h - 1)
             h = bbox[3]
             w = bbox[2]
-
             if h > 0 and w > 0:
                 radius = gaussian_radius((math.ceil(h), math.ceil(w)))
                 radius = max(0, int(radius))
