@@ -18,6 +18,7 @@ from datasets.dataset_factory import get_dataset
 from trains.train_factory import train_factory
 import mmcv
 
+
 def main(opt):
     torch.manual_seed(opt.seed)
     torch.backends.cudnn.benchmark = not opt.not_cuda_benchmark and not opt.test
@@ -38,7 +39,8 @@ def main(opt):
         raise NotImplemented
 
     transforms = T.Compose([T.ToTensor()])
-    dataset = Dataset(opt, dataset_root, trainset_paths, (1088, 608), augment=True, transforms=transforms)
+    dataset = Dataset(opt, dataset_root, trainset_paths,
+                      (1088, 608), augment=True, transforms=transforms)
     opt = opts().update_dataset_info_and_set_heads(opt, dataset)
     print(opt)
 

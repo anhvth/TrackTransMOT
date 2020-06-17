@@ -436,22 +436,23 @@ class JointDataset(LoadImagesAndLabels):  # for training
             if files_index >= c:
                 ds = list(self.label_files.keys())[i]
                 start_index = c
-
-        img_path = self.img_files[ds][files_index - start_index]
-        label_path = self.label_files[ds][files_index - start_index]
+        index_in_dataset = files_index - start_index
+        img_path = self.img_files[ds][index_in_dataset]
+        label_path = self.label_files[ds][index_in_dataset]
 
         imgs, labels, img_path, _ = self.get_data(img_path, label_path)
-        import pdb
-        pdb.set_trace()
+        # move object ids base on start index of the associated sub-dataset
         for i, _ in enumerate(labels):
             if labels[i, 1] > -1:
                 labels[i, 1] += self.tid_start_index[ds]
+        import pdb; pdb.set_trace()
 
         output_h = imgs.shape[1] // self.opt.down_ratio
         output_w = imgs.shape[2] // self.opt.down_ratio
         num_classes = self.num_classes
         num_objs = labels.shape[0]
-        hm = np.zeros((num_classes, output_h, output_w), dtype=np.float32)
+        # heatmap of objects, we draw a gause at the center object
+        hm = np.zeros((num_classes, output_h, output_w), dtype=np.float32) 
         wh = np.zeros((self.max_objs, 2), dtype=np.float32)
         reg = np.zeros((self.max_objs, 2), dtype=np.float32)
         ind = np.zeros((self.max_objs, ), dtype=np.int64)
