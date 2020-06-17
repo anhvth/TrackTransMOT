@@ -7,8 +7,8 @@ def mkdirs(d):
     if not osp.exists(d):
         os.makedirs(d)
 
-seq_root = './data/MOT20/images/train'
-label_root = './data/MOT20/labels_with_ids/train'
+seq_root = '/data/JDE/MOT20/images/train'
+label_root = '/data/JDE/MOT20/labels_with_ids/train'
 mkdirs(label_root)
 seqs = [s for s in os.listdir(seq_root)]
 
@@ -40,3 +40,4 @@ for seq in seqs:
             tid_curr, x / seq_width, y / seq_height, w / seq_width, h / seq_height)
         with open(label_fpath, 'a') as f:
             f.write(label_str)
+        print(label_fpath)

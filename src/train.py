@@ -100,5 +100,5 @@ def main(opt):
 
 if __name__ == '__main__':
     os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1'
-    opt = opts().parse()
+    opt = mmcv.Config.fromfile("./lib/cfg/default_opts.py")
     main(opt)
